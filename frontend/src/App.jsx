@@ -15,7 +15,7 @@ function App() {
   const { cartCount } = useCart();
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 font-sans text-primary">
+    <div className="flex flex-col min-h-screen bg-white font-sans text-gray-900">
       <Navbar cartCount={cartCount} />
       <CartDrawer />
 

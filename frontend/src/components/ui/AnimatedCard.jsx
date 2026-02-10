@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ShoppingBag, Eye, Heart, Check, Star, Truck, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../../context/CartContext';
 
 const AnimatedCard = ({ product, index = 0 }) => {
   const { id, name, price, category, image, stock = 10, rating = 4.5 } = product;

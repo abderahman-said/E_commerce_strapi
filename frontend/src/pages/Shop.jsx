@@ -75,9 +75,9 @@ const Shop = () => {
     ].filter(Boolean).length;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+        <div className="min-h-screen bg-white">
             {/* Header Banner */}
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-16 mb-12">
+            <div className="bg-gray-900 text-white py-16 mb-12">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center max-w-4xl mx-auto">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4">The Collection</h1>
@@ -102,7 +102,7 @@ const Shop = () => {
                             {activeFiltersCount > 0 && (
                                 <button
                                     onClick={clearAllFilters}
-                                    className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                                    className="text-sm text-gray-900 hover:text-gray-700 font-medium flex items-center gap-1"
                                 >
                                     <X size={16} />
                                     Clear All
@@ -120,7 +120,7 @@ const Shop = () => {
                                     placeholder="Search products..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all"
+                                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm transition-all"
                                 />
                             </div>
                         </div>

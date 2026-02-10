@@ -3,7 +3,7 @@ import { ShoppingBag, Eye, Heart, Check, Star, Truck, Shield } from 'lucide-reac
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
-const ProductCard = ({ product, priority = false }) => {
+const ProductCardBW = ({ product, priority = false }) => {
   const { id, name, price, category, image, stock = 10, rating = 4.5 } = product;
   const { addToCart, isInCart } = useCart();
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -281,4 +281,4 @@ const ProductCard = ({ product, priority = false }) => {
   );
 };
 
-export default ProductCard;
+export default ProductCardBW;
