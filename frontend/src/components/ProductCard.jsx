@@ -261,7 +261,7 @@ const ProductCard = ({ product, priority = false }) => {
               
               {inCart ? (
                 <>
-                  <Check size={14} className="sm:size-16" />
+                  <Check size={16} className="size-[18px]" />
                   <span className="text-[10px] sm:text-xs">In Cart</span>
                 </>
               ) : addingToCart ? (
@@ -273,7 +273,7 @@ const ProductCard = ({ product, priority = false }) => {
                 <span className="text-[10px] sm:text-xs">Out of Stock</span>
               ) : (
                 <>
-                  <ShoppingBag size={12} className="sm:size-14" />
+                  <ShoppingBag size={16} className="size-[18px]" />
                   <span className="text-[10px] sm:text-xs">Add to Cart</span>
                 </>
               )}
