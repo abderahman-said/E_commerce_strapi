@@ -62,7 +62,8 @@ const ProductCard = ({ product, priority = false }) => {
 
   return (
     <article 
-      className="group relative bg-white rounded-xl sm:rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-secondary hover:border-primary"
+      className="group relative bg-white rounded-lg sm:rounded-xl lg:rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-secondary hover:border-primary
+               touch-manipulation"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -94,11 +95,11 @@ const ProductCard = ({ product, priority = false }) => {
           />
 
           {/* Floating Badges */}
-          <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
+          <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex flex-col gap-1.5 sm:gap-2 z-10">
             <span className="
               bg-primary 
-              text-white text-[10px] font-bold uppercase tracking-wider 
-              px-3 py-1.5 rounded-lg shadow-lg
+              text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
+              px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg shadow-lg
               transition-all duration-300
             ">
               New
@@ -106,8 +107,8 @@ const ProductCard = ({ product, priority = false }) => {
             {discount > 0 && (
               <span className="
                 bg-primary 
-                text-white text-[10px] font-bold uppercase tracking-wider 
-                px-3 py-1.5 rounded-lg shadow-lg
+                text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
+                px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg shadow-lg
                 transition-all duration-300
               ">
                 -{discount}%
@@ -116,8 +117,8 @@ const ProductCard = ({ product, priority = false }) => {
             {stock < 5 && stock > 0 && (
               <span className="
                 bg-primary 
-                text-white text-[10px] font-bold uppercase tracking-wider 
-                px-3 py-1.5 rounded-lg shadow-lg
+                text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-wider 
+                px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg shadow-lg
                 transition-all duration-300
               ">
                 Low Stock
@@ -127,30 +128,32 @@ const ProductCard = ({ product, priority = false }) => {
 
           {/* Quick Action Buttons */}
           <div className={`
-            absolute top-3 right-3 flex flex-col gap-2 z-10
+            absolute top-2 right-2 sm:top-3 sm:right-3 flex flex-col gap-1.5 sm:gap-2 z-10
             transition-all duration-500 ease-out
-            ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}
+            ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-6 sm:translate-x-8'}
           `}>
             <button
               onClick={handleQuickView}
-              className="w-10 h-10 rounded-full bg-white/95 backdrop-blur-sm shadow-lg 
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/95 backdrop-blur-sm shadow-lg 
                        flex items-center justify-center text-gray-700 
                        hover:bg-primary hover:text-white 
                        hover:scale-125 hover:rotate-12
                        transition-all duration-300
-                       focus:outline-none focus:ring-2 focus:ring-primary"
+                       focus:outline-none focus:ring-2 focus:ring-primary
+                       touch-manipulation"
               title="Quick View"
               aria-label="Quick view product"
             >
-              <Eye size={16} />
+              <Eye size={14} className="sm:size-16" />
             </button>
             <button
               onClick={handleWishlist}
               className={`
-                w-10 h-10 rounded-full bg-white/95 backdrop-blur-sm shadow-lg 
+                w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/95 backdrop-blur-sm shadow-lg 
                 flex items-center justify-center 
                 hover:scale-125 transition-all duration-300
                 focus:outline-none focus:ring-2 focus:ring-primary
+                touch-manipulation
                 ${isWishlisted 
                   ? 'text-primary hover:bg-secondary' 
                   : 'text-gray-700 hover:bg-primary hover:text-white'
@@ -161,9 +164,9 @@ const ProductCard = ({ product, priority = false }) => {
               aria-pressed={isWishlisted}
             >
               <Heart 
-                size={16} 
+                size={14} 
                 fill={isWishlisted ? 'currentColor' : 'none'}
-                className={isWishlisted ? 'animate-pulse' : ''}
+                className={`sm:size-16 ${isWishlisted ? 'animate-pulse' : ''}`}
               />
             </button>
           </div>
@@ -177,10 +180,10 @@ const ProductCard = ({ product, priority = false }) => {
               ${imageLoaded ? 'opacity-100' : 'opacity-0'}
             `}>
               <div className="text-center">
-                <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-2xl">🚫</span>
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                  <span className="text-xl sm:text-2xl">🚫</span>
                 </div>
-                <span className="text-white font-bold text-lg uppercase tracking-wider">
+                <span className="text-white font-bold text-sm sm:text-base lg:text-lg uppercase tracking-wider">
                   Sold Out
                 </span>
               </div>
@@ -189,33 +192,33 @@ const ProductCard = ({ product, priority = false }) => {
         </div>
 
         {/* Product Info */}
-        <div className="p-3 sm:p-4 space-y-3">
+        <div className="p-2.5 sm:p-3 md:p-4 space-y-2 sm:space-y-3">
           {/* Category and Rating */}
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-gray-500 uppercase tracking-wide bg-secondary px-2 py-1 rounded-full">
+            <span className="text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wide bg-secondary px-2 py-0.5 sm:py-1 rounded-full">
               {category}
             </span>
             {rating && renderStars(rating)}
           </div>
           
           {/* Product Name */}
-          <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-primary line-clamp-2 
+          <h3 className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-primary line-clamp-2 
                      group-hover:text-primary transition-colors duration-300 leading-tight">
             {name}
           </h3>
           
           {/* Price and Actions */}
-          <div className="space-y-3">
-            <div className="flex items-baseline gap-2">
-              <span className="text-lg sm:text-xl font-bold text-primary transition-all duration-300">
+          <div className="space-y-2 sm:space-y-3">
+            <div className="flex items-baseline gap-1.5 sm:gap-2">
+              <span className="text-base sm:text-lg md:text-xl font-bold text-primary transition-all duration-300">
                 ${price}
               </span>
               {discount > 0 && (
                 <>
-                  <span className="text-xs sm:text-sm text-gray-400 line-through">
+                  <span className="text-[10px] sm:text-xs sm:text-sm text-gray-400 line-through">
                     ${oldPrice}
                   </span>
-                  <span className="text-xs font-semibold text-primary bg-secondary px-2 py-1 rounded">
+                  <span className="text-[10px] sm:text-xs font-semibold text-primary bg-secondary px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">
                     Save ${(oldPrice - price).toFixed(2)}
                   </span>
                 </>
@@ -224,8 +227,8 @@ const ProductCard = ({ product, priority = false }) => {
 
             {/* Stock Indicator */}
             {stock > 0 && stock < 10 && (
-              <div className="flex items-center gap-1 text-xs text-gray-600 bg-secondary px-2 py-1 rounded-full w-fit">
-                <Truck size={12} />
+              <div className="flex items-center gap-1 text-[10px] sm:text-xs text-gray-600 bg-secondary px-2 py-1 rounded-full w-fit">
+                <Truck size={10} className="sm:size-12" />
                 Only {stock} left
               </div>
             )}
@@ -235,11 +238,12 @@ const ProductCard = ({ product, priority = false }) => {
               onClick={handleAddToCart}
               disabled={addingToCart || inCart || stock === 0}
               className={`
-                w-full py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl font-medium text-xs sm:text-sm 
+                w-full py-2 sm:py-2.5 px-2 sm:px-3 md:px-4 rounded-lg sm:rounded-xl font-medium text-xs sm:text-sm 
                 transition-all duration-300 ease-out
-                flex items-center justify-center gap-2
+                flex items-center justify-center gap-1.5 sm:gap-2
                 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1
                 relative overflow-hidden
+                touch-manipulation min-h-[36px] sm:min-h-[40px]
                 ${inCart
                   ? 'bg-primary text-white hover:bg-primary-hover'
                   : addingToCart
@@ -257,20 +261,20 @@ const ProductCard = ({ product, priority = false }) => {
               
               {inCart ? (
                 <>
-                  <Check size={16} />
-                  <span>In Cart</span>
+                  <Check size={14} className="sm:size-16" />
+                  <span className="text-[10px] sm:text-xs">In Cart</span>
                 </>
               ) : addingToCart ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>Adding...</span>
+                  <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-[10px] sm:text-xs">Adding...</span>
                 </>
               ) : stock === 0 ? (
-                <span>Out of Stock</span>
+                <span className="text-[10px] sm:text-xs">Out of Stock</span>
               ) : (
                 <>
-                  <ShoppingBag size={14} />
-                  <span>Add to Cart</span>
+                  <ShoppingBag size={12} className="sm:size-14" />
+                  <span className="text-[10px] sm:text-xs">Add to Cart</span>
                 </>
               )}
             </button>
