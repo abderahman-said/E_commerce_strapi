@@ -62,7 +62,7 @@ const ProductCard = ({ product, priority = false }) => {
 
   return (
     <article 
-      className="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-secondary hover:border-primary"
+      className="group relative bg-white rounded-xl sm:rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-secondary hover:border-primary"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -189,7 +189,7 @@ const ProductCard = ({ product, priority = false }) => {
         </div>
 
         {/* Product Info */}
-        <div className="p-4 space-y-3">
+        <div className="p-3 sm:p-4 space-y-3">
           {/* Category and Rating */}
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-gray-500 uppercase tracking-wide bg-secondary px-2 py-1 rounded-full">
@@ -199,7 +199,7 @@ const ProductCard = ({ product, priority = false }) => {
           </div>
           
           {/* Product Name */}
-          <h3 className="text-base lg:text-lg font-semibold text-primary line-clamp-2 
+          <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-primary line-clamp-2 
                      group-hover:text-primary transition-colors duration-300 leading-tight">
             {name}
           </h3>
@@ -207,12 +207,12 @@ const ProductCard = ({ product, priority = false }) => {
           {/* Price and Actions */}
           <div className="space-y-3">
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-primary transition-all duration-300">
+              <span className="text-lg sm:text-xl font-bold text-primary transition-all duration-300">
                 ${price}
               </span>
               {discount > 0 && (
                 <>
-                  <span className="text-sm text-gray-400 line-through">
+                  <span className="text-xs sm:text-sm text-gray-400 line-through">
                     ${oldPrice}
                   </span>
                   <span className="text-xs font-semibold text-primary bg-secondary px-2 py-1 rounded">
@@ -235,7 +235,7 @@ const ProductCard = ({ product, priority = false }) => {
               onClick={handleAddToCart}
               disabled={addingToCart || inCart || stock === 0}
               className={`
-                w-full py-2.5 px-4 rounded-xl font-medium text-sm 
+                w-full py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl font-medium text-xs sm:text-sm 
                 transition-all duration-300 ease-out
                 flex items-center justify-center gap-2
                 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1
@@ -269,7 +269,7 @@ const ProductCard = ({ product, priority = false }) => {
                 <span>Out of Stock</span>
               ) : (
                 <>
-                  <ShoppingBag size={16} />
+                  <ShoppingBag size={14} />
                   <span>Add to Cart</span>
                 </>
               )}

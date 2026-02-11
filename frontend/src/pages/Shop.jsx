@@ -89,6 +89,25 @@ const Shop = () => {
             </div>
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+                {/* Mobile Filter Toggle */}
+                <div className="lg:hidden mb-6 flex items-center justify-between">
+                    <h2 className="text-lg font-bold text-gray-900">
+                        {filteredProducts.length} Products
+                    </h2>
+                    <button
+                        onClick={() => setShowFilters(!showFilters)}
+                        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                        <SlidersHorizontal size={18} />
+                        Filters
+                        {activeFiltersCount > 0 && (
+                            <span className="bg-primary text-white text-xs px-2 py-1 rounded-full">
+                                {activeFiltersCount}
+                            </span>
+                        )}
+                    </button>
+                </div>
+
                 <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-8">
                     
                     {/* Sidebar Filters */}
@@ -239,7 +258,7 @@ const Shop = () => {
                         )}
 
                         {/* Product Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                             {filteredProducts.length > 0 ? (
                                 filteredProducts.map(product => (
                                     <ProductCard key={product.id} product={product} />

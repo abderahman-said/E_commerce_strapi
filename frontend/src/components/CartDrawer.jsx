@@ -288,7 +288,7 @@ const CartDrawer = () => {
             <div 
                 ref={drawerRef}
                 className={`
-                    fixed right-0 top-0 h-full w-full max-w-xl bg-white shadow-2xl z-50
+                    fixed right-0 top-0 h-full w-full sm:w-96 md:w-[420px] lg:max-w-xl bg-white shadow-2xl z-50
                     transform transition-all duration-500 ease-out
                     ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}
                     ${isAnimating ? 'scale-95' : 'scale-100'}
