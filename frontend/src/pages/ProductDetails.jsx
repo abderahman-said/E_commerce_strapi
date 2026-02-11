@@ -172,7 +172,7 @@ const ProductDetails = () => {
                         <div className="space-y-4">
                             <button 
                                 onClick={handleAddToCart}
-                                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-3"
+                                className="w-full bg-[#0f172a] text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-3"
                             >
                                 <ShoppingBag size={24} />
                                 Add to Cart — ${(product.price * quantity).toFixed(2)}

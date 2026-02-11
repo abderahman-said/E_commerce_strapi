@@ -52,7 +52,7 @@ const ProductCard = ({ product, priority = false }) => {
           <Star
             key={i}
             size={12}
-            className={i < Math.floor(rating) ? "fill-gray-900 text-gray-900" : "text-gray-300"}
+            className={i < Math.floor(rating) ? "fill-primary text-primary" : "text-gray-300"}
           />
         ))}
         <span className="text-xs text-gray-600 ml-1">{rating}</span>
@@ -62,20 +62,20 @@ const ProductCard = ({ product, priority = false }) => {
 
   return (
     <article 
-      className="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-gray-200"
+      className="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-secondary hover:border-primary"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <Link
         to={`/product/${id}`}
-        className="block focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 rounded-2xl"
+        className="block focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-2xl"
         aria-label={`View details for ${name}`}
       >
         <div className="relative aspect-[3/4] bg-gray-50 overflow-hidden">
           {/* Shimmer Effect */}
           {!imageLoaded && (
             <div className="absolute inset-0">
-              <div className="w-full h-full bg-gradient-to-r from-transparent via-gray-100 to-transparent animate-shimmer"></div>
+              <div className="w-full h-full bg-gradient-to-r from-transparent via-secondary to-transparent animate-shimmer"></div>
             </div>
           )}
 
@@ -96,7 +96,7 @@ const ProductCard = ({ product, priority = false }) => {
           {/* Floating Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
             <span className="
-              bg-gray-900 
+              bg-primary 
               text-white text-[10px] font-bold uppercase tracking-wider 
               px-3 py-1.5 rounded-lg shadow-lg
               transition-all duration-300
@@ -105,7 +105,7 @@ const ProductCard = ({ product, priority = false }) => {
             </span>
             {discount > 0 && (
               <span className="
-                bg-gray-900 
+                bg-primary 
                 text-white text-[10px] font-bold uppercase tracking-wider 
                 px-3 py-1.5 rounded-lg shadow-lg
                 transition-all duration-300
@@ -115,7 +115,7 @@ const ProductCard = ({ product, priority = false }) => {
             )}
             {stock < 5 && stock > 0 && (
               <span className="
-                bg-gray-900 
+                bg-primary 
                 text-white text-[10px] font-bold uppercase tracking-wider 
                 px-3 py-1.5 rounded-lg shadow-lg
                 transition-all duration-300
@@ -135,10 +135,10 @@ const ProductCard = ({ product, priority = false }) => {
               onClick={handleQuickView}
               className="w-10 h-10 rounded-full bg-white/95 backdrop-blur-sm shadow-lg 
                        flex items-center justify-center text-gray-700 
-                       hover:bg-gray-900 hover:text-white 
+                       hover:bg-primary hover:text-white 
                        hover:scale-125 hover:rotate-12
                        transition-all duration-300
-                       focus:outline-none focus:ring-2 focus:ring-gray-900"
+                       focus:outline-none focus:ring-2 focus:ring-primary"
               title="Quick View"
               aria-label="Quick view product"
             >
@@ -150,10 +150,10 @@ const ProductCard = ({ product, priority = false }) => {
                 w-10 h-10 rounded-full bg-white/95 backdrop-blur-sm shadow-lg 
                 flex items-center justify-center 
                 hover:scale-125 transition-all duration-300
-                focus:outline-none focus:ring-2 focus:ring-gray-900
+                focus:outline-none focus:ring-2 focus:ring-primary
                 ${isWishlisted 
-                  ? 'text-gray-900 hover:bg-gray-100' 
-                  : 'text-gray-700 hover:bg-gray-900 hover:text-white'
+                  ? 'text-primary hover:bg-secondary' 
+                  : 'text-gray-700 hover:bg-primary hover:text-white'
                 }
               `}
               title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
@@ -171,7 +171,7 @@ const ProductCard = ({ product, priority = false }) => {
           {/* Out of Stock Overlay */}
           {stock === 0 && (
             <div className={`
-              absolute inset-0 bg-gray-900/80 backdrop-blur-sm 
+              absolute inset-0 bg-primary/80 backdrop-blur-sm 
               flex items-center justify-center
               transition-all duration-500
               ${imageLoaded ? 'opacity-100' : 'opacity-0'}
@@ -192,22 +192,22 @@ const ProductCard = ({ product, priority = false }) => {
         <div className="p-4 space-y-3">
           {/* Category and Rating */}
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-gray-500 uppercase tracking-wide bg-gray-100 px-2 py-1 rounded-full">
+            <span className="text-xs font-medium text-gray-500 uppercase tracking-wide bg-secondary px-2 py-1 rounded-full">
               {category}
             </span>
             {rating && renderStars(rating)}
           </div>
           
           {/* Product Name */}
-          <h3 className="text-base lg:text-lg font-semibold text-gray-900 line-clamp-2 
-                     group-hover:text-gray-900 transition-colors duration-300 leading-tight">
+          <h3 className="text-base lg:text-lg font-semibold text-primary line-clamp-2 
+                     group-hover:text-primary transition-colors duration-300 leading-tight">
             {name}
           </h3>
           
           {/* Price and Actions */}
           <div className="space-y-3">
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-gray-900 transition-all duration-300">
+              <span className="text-xl font-bold text-primary transition-all duration-300">
                 ${price}
               </span>
               {discount > 0 && (
@@ -215,7 +215,7 @@ const ProductCard = ({ product, priority = false }) => {
                   <span className="text-sm text-gray-400 line-through">
                     ${oldPrice}
                   </span>
-                  <span className="text-xs font-semibold text-gray-900 bg-gray-100 px-2 py-1 rounded">
+                  <span className="text-xs font-semibold text-primary bg-secondary px-2 py-1 rounded">
                     Save ${(oldPrice - price).toFixed(2)}
                   </span>
                 </>
@@ -224,7 +224,7 @@ const ProductCard = ({ product, priority = false }) => {
 
             {/* Stock Indicator */}
             {stock > 0 && stock < 10 && (
-              <div className="flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full w-fit">
+              <div className="flex items-center gap-1 text-xs text-gray-600 bg-secondary px-2 py-1 rounded-full w-fit">
                 <Truck size={12} />
                 Only {stock} left
               </div>
@@ -238,15 +238,15 @@ const ProductCard = ({ product, priority = false }) => {
                 w-full py-2.5 px-4 rounded-xl font-medium text-sm 
                 transition-all duration-300 ease-out
                 flex items-center justify-center gap-2
-                focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-1
+                focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1
                 relative overflow-hidden
                 ${inCart
-                  ? 'bg-gray-900 text-white hover:bg-gray-800'
+                  ? 'bg-primary text-white hover:bg-primary-hover'
                   : addingToCart
-                  ? 'bg-gray-900 text-white cursor-wait'
+                  ? 'bg-primary text-white cursor-wait'
                   : stock === 0
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-gray-900 text-white hover:bg-gray-800'
+                  : 'bg-primary text-white hover:bg-primary-hover'
                 }
               `}
               title={inCart ? 'In Cart' : addingToCart ? 'Adding...' : stock === 0 ? 'Out of Stock' : 'Add to Cart'}

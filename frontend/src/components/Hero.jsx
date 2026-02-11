@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Play, Award, TrendingUp } from 'lucide-react';
+import {   Award, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Hero = () => {
@@ -10,11 +10,7 @@ const Hero = () => {
     const timer = setTimeout(() => setLoaded(true), 100);
     return () => clearTimeout(timer);
   }, []);
-
-  const handleVideoClick = () => {
-    // Implement video modal logic here
-    console.log('Open video modal');
-  };
+ 
 
   return (
     <section className="relative min-h-[90vh] lg:min-h-screen flex items-center bg-gray-50 overflow-hidden">
@@ -32,10 +28,14 @@ const Hero = () => {
           <div className={`space-y-8 transition-all duration-1000 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
             
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-200">
-              <Award className="w-4 h-4 text-accent" />
+            <div className="inline-flex items-center gap-3 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-200">
+              <img 
+                src="/logo.png" 
+                alt="Velvet Vibe" 
+                className="h-5 w-auto object-contain"
+              />
               <span className="text-xs font-semibold text-gray-700 tracking-wide">
-                Est. 2024 — Velvet Vibe Collection
+                Est. 2024 — Collection
               </span>
             </div>
 
@@ -65,16 +65,7 @@ const Hero = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-accent to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </Link>
               
-              <button 
-                onClick={handleVideoClick}
-                className="group inline-flex items-center gap-3 px-6 py-4 bg-white text-gray-900 font-semibold rounded-lg border-2 border-gray-200 transition-all duration-300 hover:border-gray-900 hover:shadow-lg"
-                aria-label="Watch our brand film"
-              >
-                <span className="relative flex items-center justify-center w-10 h-10 bg-accent rounded-full group-hover:scale-110 transition-transform duration-300">
-                  <Play size={16} fill="white" className="text-white ml-0.5" />
-                </span>
-                <span>Watch Film</span>
-              </button>
+              
             </div>
 
             {/* Stats */}
@@ -104,7 +95,7 @@ const Hero = () => {
             <div className="relative aspect-[3/4] lg:aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl">
               {/* Image */}
               <img
-                src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80"
+                src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=90"
                 alt="Fashion model showcasing luxury collection"
                 className="w-full h-full object-cover"
                 loading="eager" // Load hero image immediately

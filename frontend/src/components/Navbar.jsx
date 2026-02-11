@@ -10,8 +10,12 @@ const Navbar = ({ cartCount = 0 }) => {
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-        <Link to="/" className="font-heading font-bold text-2xl uppercase tracking-tighter text-primary">
-          VELVET<span className="font-normal text-accent">VIBE</span>
+        <Link to="/" className="flex items-center">
+          <img 
+            src="/logo.png" 
+            alt="Velvet Vibe" 
+            className="h-16 w-auto object-contain"
+          />
         </Link>
 
         {/* Desktop Nav */}
@@ -29,14 +33,14 @@ const Navbar = ({ cartCount = 0 }) => {
         </nav>
 
         <div className="flex items-center gap-4">
-          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors text-primary">
+          <button className="p-2 hover:bg-secondary rounded-full transition-colors text-primary">
             <Search size={20} strokeWidth={1.5} />
           </button>
-          <button className="hidden sm:block p-2 hover:bg-gray-100 rounded-full transition-colors text-primary">
+          <button className="hidden sm:block p-2 hover:bg-secondary rounded-full transition-colors text-primary">
             <User size={20} strokeWidth={1.5} />
           </button>
           <button
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors text-primary relative"
+            className="p-2 hover:bg-secondary rounded-full transition-colors text-primary relative"
             onClick={() => setIsCartOpen(true)}
           >
             <ShoppingBag size={20} strokeWidth={1.5} />
@@ -47,7 +51,7 @@ const Navbar = ({ cartCount = 0 }) => {
             )}
           </button>
           <button
-            className="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors text-primary"
+            className="md:hidden p-2 hover:bg-secondary rounded-full transition-colors text-primary"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -57,7 +61,7 @@ const Navbar = ({ cartCount = 0 }) => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-white border-b border-gray-100 py-4 px-6 flex flex-col gap-4 shadow-lg">
+        <div className="md:hidden absolute top-full left-0 w-full bg-white border-b border-secondary py-4 px-6 flex flex-col gap-4 shadow-lg">
           {['New Arrivals', 'Men', 'Women', 'Accessories'].map((item) => (
             <Link
               key={item}
