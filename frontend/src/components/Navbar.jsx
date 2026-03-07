@@ -33,7 +33,7 @@ const Navbar = ({ cartCount = 0 }) => {
   return (
     <>
 
-    <header className={`sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b transition-all duration-300 ${
+    <header className={`sticky top-0 z-40  bg-white/80 backdrop-blur-md border-b transition-all duration-300 ${
       isScrolled ? 'border-gray-200 shadow-sm' : 'border-transparent'
     }`}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 lg:h-20 flex items-center justify-between">
