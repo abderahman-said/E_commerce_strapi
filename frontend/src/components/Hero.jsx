@@ -66,11 +66,11 @@ const Hero = () => {
               </Link>
               
               <button 
-                className="group inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-5 lg:px-6 py-2.5 sm:py-3 md:py-3.5 lg:py-4 bg-white text-gray-900 font-semibold rounded-lg border-2 border-gray-200 transition-all duration-300 hover:border-gray-900 hover:shadow-lg w-full sm:w-auto text-sm sm:text-base touch-manipulation min-h-[44px]"
+                className="group inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-5 lg:px-6 py-2.5 sm:py-3 md:py-3.5 lg:py-3.2 bg-white text-gray-900 font-semibold rounded-lg border-2 border-gray-200 transition-all duration-300 hover:border-gray-900 hover:shadow-lg w-full sm:w-auto text-sm sm:text-base touch-manipulation min-h-[44px]"
                 aria-label="Watch our brand film"
               >
-                <span className="relative flex items-center justify-center w-7 h-7 sm:w-8 sm:h-10 md:w-9 md:h-11 lg:w-10 lg:h-12 bg-accent rounded-full group-hover:scale-110 transition-transform duration-300">
-                  <Play size={12} fill="white" className="text-white ml-0.5 sm:size-14" />
+                <span className="relative flex items-center justify-center  w-[30px] h-[30px]    bg-accent rounded-full group-hover:scale-110 transition-transform duration-300">
+                  <Play size={16} fill="white" className="text-white ml-0.5 " />
                 </span>
                 <span className="text-xs sm:text-sm">Watch Film</span>
               </button>

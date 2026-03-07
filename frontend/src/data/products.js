@@ -3,7 +3,7 @@ export const SAMPLE_PRODUCTS = [
         id: 1,
         name: "Minimalist Linen Shirt",
         price: 89,
-        category: "Menswear",
+        category: "Men",
         image: "https://images.unsplash.com/photo-1620012232964-7a7bde4c4ea5?auto=format&fit=crop&w=800&q=85",
         description: "Crafted from 100% premium linen, this shirt offers breathability and effortless style for warm days."
     },
@@ -11,7 +11,7 @@ export const SAMPLE_PRODUCTS = [
         id: 2,
         name: "Silk Evening Dress",
         price: 249,
-        category: "Womenswear",
+        category: "Women",
         image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=800&q=85",
         description: "A stunning floor-length silk dress designed to make a statement at any formal event."
     },
@@ -27,7 +27,7 @@ export const SAMPLE_PRODUCTS = [
         id: 4,
         name: "Oversized Cashmere Sweater",
         price: 120,
-        category: "Unisex",
+        category: "New Arrivals",
         image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=800&q=85",
         description: "Luxury meets comfort in this ultra-soft cashmere sweater featuring a modern oversized fit."
     },
@@ -35,7 +35,7 @@ export const SAMPLE_PRODUCTS = [
         id: 5,
         name: "Tailored Wool Trousers",
         price: 145,
-        category: "Menswear",
+        category: "Men",
         image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=85",
         description: "Sharp, tailored trousers made from fine wool, perfect for office or evening wear."
     },
@@ -43,7 +43,7 @@ export const SAMPLE_PRODUCTS = [
         id: 6,
         name: "Structured Blazer",
         price: 210,
-        category: "Womenswear",
+        category: "Women",
         image: "https://images.unsplash.com/photo-1583496266332-6e065d96d6b7?auto=format&fit=crop&w=800&q=85",
         description: "A versatile, structured blazer that adds polish to any outfit, from jeans to dresses."
     },
@@ -59,7 +59,7 @@ export const SAMPLE_PRODUCTS = [
         id: 8,
         name: "Merino Wool Cardigan",
         price: 135,
-        category: "Womenswear",
+        category: "Women",
         image: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=800&q=85",
         description: "Soft merino wool cardigan perfect for layering in transitional seasons."
     },
@@ -75,7 +75,7 @@ export const SAMPLE_PRODUCTS = [
         id: 10,
         name: "Cotton Oxford Shirt",
         price: 110,
-        category: "Menswear",
+        category: "Men",
         image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2f?auto=format&fit=crop&w=800&q=85",
         description: "Classic Oxford shirt in premium cotton with button-down collar."
     },
@@ -91,7 +91,7 @@ export const SAMPLE_PRODUCTS = [
         id: 12,
         name: "Wool Blend Coat",
         price: 295,
-        category: "Womenswear",
+        category: "New Arrivals",
         image: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&w=800&q=85",
         description: "Elegant wool blend coat with modern silhouette and classic tailoring."
     }

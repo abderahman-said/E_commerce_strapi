@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { Search, SlidersHorizontal, ChevronDown, Filter, X } from 'lucide-react';
 import { SAMPLE_PRODUCTS } from '../data/products';
@@ -7,7 +8,7 @@ import PriceRangeFilter from '../components/ui/PriceRangeFilter';
 import TagFilter from '../components/ui/TagFilter';
 import SortSelect from '../components/ui/SortSelect';
 
-const CATEGORIES = ['All', 'Menswear', 'Womenswear', 'Accessories', 'Unisex'];
+const CATEGORIES = ['All', 'New Arrivals', 'Men', 'Women', 'Accessories'];
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest' },
   { value: 'price-low', label: 'Price: Low to High' },
@@ -15,19 +16,38 @@ const SORT_OPTIONS = [
 ];
 
 const Shop = () => {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [searchParams] = useSearchParams();
+    const activeCategory = searchParams.get('active');
+    const urlSearchQuery = searchParams.get('search') || '';
+    
+    const [searchQuery, setSearchQuery] = useState(urlSearchQuery);
+    const [selectedCategories, setSelectedCategories] = useState([]);
     const [sortBy, setSortBy] = useState('newest');
     const [showFilters, setShowFilters] = useState(false);
     const [priceRange, setPriceRange] = useState({ min: 0, max: 500 });
     const [selectedTags, setSelectedTags] = useState([]);
 
+    // Set active category from URL parameter
+    useEffect(() => {
+        if (activeCategory) {
+            const categoryMap = {
+                'new-arrivals': 'New Arrivals',
+                'men': 'Men',
+                'women': 'Women',
+                'accessories': 'Accessories'
+            };
+            const category = categoryMap[activeCategory];
+            if (category && !selectedCategories.includes(category)) {
+                setSelectedCategories([category]);
+            }
+        }
+    }, [activeCategory, selectedCategories]);
+
     const categories = [
-      { value: 'electronics', label: 'Electronics', count: 45 },
-      { value: 'clothing', label: 'Clothing', count: 32 },
-      { value: 'books', label: 'Books', count: 28 },
-      { value: 'home', label: 'Home & Garden', count: 19 },
-      { value: 'sports', label: 'Sports', count: 15 },
+      { value: 'new-arrivals', label: 'New Arrivals', count: 24 },
+      { value: 'men', label: 'Men', count: 48 },
+      { value: 'women', label: 'Women', count: 62 },
+      { value: 'accessories', label: 'Accessories', count: 31 },
     ];
 
     const tags = [
@@ -41,7 +61,7 @@ const Shop = () => {
     const filteredProducts = useMemo(() => {
         let result = SAMPLE_PRODUCTS.filter(product => {
             const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
+            const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(product.category);
             const matchesPrice = product.price >= priceRange.min && product.price <= priceRange.max;
             const matchesTags = selectedTags.length === 0 || selectedTags.some(tag => 
                 product.tags && product.tags.includes(tag)
@@ -57,11 +77,11 @@ const Shop = () => {
         // 'newest' assumes default order for now
 
         return result;
-    }, [searchQuery, selectedCategory, sortBy, priceRange, selectedTags]);
+    }, [searchQuery, selectedCategories, sortBy, priceRange, selectedTags]);
 
     const clearAllFilters = () => {
         setSearchQuery('');
-        setSelectedCategory('All');
+        setSelectedCategories([]);
         setPriceRange({ min: 0, max: 500 });
         setSelectedTags([]);
         setSortBy('newest');
@@ -69,7 +89,7 @@ const Shop = () => {
 
     const activeFiltersCount = [
         searchQuery !== '',
-        selectedCategory !== 'All',
+        selectedCategories.length > 0,
         priceRange.min > 0 || priceRange.max < 500,
         selectedTags.length > 0
     ].filter(Boolean).length;
@@ -77,11 +97,19 @@ const Shop = () => {
     return (
         <div className="min-h-screen bg-white">
             {/* Header Banner */}
-            <div className="bg-gray-900 text-white py-12 sm:py-16 mb-8 sm:mb-12">
-                <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+            <div 
+                className="bg-gray-900 text-white py-12 sm:py-16 mb-8 sm:mb-12 relative overflow-hidden"
+                style={{
+                    backgroundImage: 'url(https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&h=400&fit=crop&crop=center)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                }}
+            >
+                <div className="absolute inset-0 bg-black/50"></div>
+                <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
                     <div className="text-center max-w-4xl mx-auto">
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4">The Collection</h1>
-                        <p className="text-base sm:text-lg md:text-xl opacity-90 max-w-2xl mx-auto">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl text-white font-bold mb-3 sm:mb-4">The Collection</h1>
+                        <p className="text-base sm:text-lg md:text-xl text-white opacity-90 max-w-2xl mx-auto">
                             Curated essentials for modern wardrobe. Timeless pieces designed for everyday luxury.
                         </p>
                     </div>
@@ -115,7 +143,7 @@ const Shop = () => {
                         {/* Filter Header */}
                         <div className="flex items-center justify-between mb-4 sm:mb-6">
                             <h2 className="text-base sm:text-lg font-bold text-gray-900 flex items-center gap-2">
-                                <Filter size={18} className="sm:size-20" />
+                                <Filter size={18} className=" " />
                                 Filters
                             </h2>
                             {activeFiltersCount > 0 && (
@@ -123,7 +151,7 @@ const Shop = () => {
                                     onClick={clearAllFilters}
                                     className="text-sm text-gray-900 hover:text-gray-700 font-medium flex items-center gap-1 touch-manipulation"
                                 >
-                                    <X size={14} className="sm:size-16" />
+                                    <X size={14} className="" />
                                     Clear All
                                 </button>
                             )}
@@ -158,8 +186,16 @@ const Shop = () => {
                         <div className="bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-gray-200">
                             <CategoryFilter
                                 categories={categories}
-                                selectedCategories={selectedCategory === 'All' ? [] : [selectedCategory]}
-                                onChange={(cats) => setSelectedCategory(cats.length === 0 ? 'All' : cats[0])}
+                                selectedCategories={selectedCategories.map(cat => cat.toLowerCase().replace(' ', '-'))}
+                                onChange={(cats) => {
+                                    const categoryMap = {
+                                        'new-arrivals': 'New Arrivals',
+                                        'men': 'Men',
+                                        'women': 'Women',
+                                        'accessories': 'Accessories'
+                                    };
+                                    setSelectedCategories(cats.map(cat => categoryMap[cat] || cat));
+                                }}
                                 variant="sidebar"
                             />
                         </div>
@@ -241,9 +277,17 @@ const Shop = () => {
                                             {CATEGORIES.map(category => (
                                                 <button
                                                     key={category}
-                                                    onClick={() => setSelectedCategory(category)}
+                                                    onClick={() => {
+                                                        if (category === 'All') {
+                                                            setSelectedCategories([]);
+                                                        } else if (selectedCategories.includes(category)) {
+                                                            setSelectedCategories(selectedCategories.filter(cat => cat !== category));
+                                                        } else {
+                                                            setSelectedCategories([...selectedCategories, category]);
+                                                        }
+                                                    }}
                                                     className={`px-3 py-1.5 text-sm rounded-lg transition-colors touch-manipulation ${
-                                                        selectedCategory === category 
+                                                        selectedCategories.includes(category) 
                                                             ? 'bg-blue-600 text-white' 
                                                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                                     }`}
@@ -265,8 +309,13 @@ const Shop = () => {
                                 ))
                             ) : (
                                 <div className="col-span-full py-12 sm:py-16 md:py-20 text-center bg-white rounded-2xl border-2 border-dashed border-gray-300">
-                                    <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                                        <span className="text-2xl sm:text-3xl">🔍</span>
+                                    <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 overflow-hidden">
+                                        <img 
+                                            src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=100&h=100&fit=crop&crop=center" 
+                                            alt="No products found" 
+                                            className="w-full h-full object-cover"
+                                            loading="lazy"
+                                        />
                                     </div>
                                     <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">No products found</h3>
                                     <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 max-w-md mx-auto">

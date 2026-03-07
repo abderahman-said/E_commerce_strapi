@@ -103,7 +103,7 @@ const CategoryFilter = ({
                 type="checkbox"
                 checked={selectedCategories.includes(category.value)}
                 onChange={() => handleCategoryChange(category.value)}
-                className="rounded border-gray-300 text-gray-900 focus:ring-gray-500"
+                className="w-5 h-5 rounded border-gray-300 text-black focus:ring-black focus:ring-offset-0"
               />
               <span className="text-sm text-gray-700">{category.label}</span>
               {category.count && (

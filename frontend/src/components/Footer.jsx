@@ -1,18 +1,59 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Facebook, Instagram, Twitter, Youtube, Mail, Phone, MapPin } from 'lucide-react';
 
 const Footer = () => {
     return (
-        <footer className="bg-primary text-white py-12 sm:py-16 mt-auto">
+        <footer className="bg-black text-white pt-12 pb-8 sm:pt-16 mt-auto">
             <div className="container mx-auto px-4 sm:px-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 mb-8 sm:mb-12">
                     <div>
-                        <div className="font-heading font-bold text-xl sm:text-2xl uppercase tracking-tighter mb-4">
-                            VELVET<span className="font-normal text-accent">VIBE</span>
-                        </div>
-                        <p className="text-xs sm:text-sm text-gray-400 leading-relaxed">
+                         <a href="/" className="inline-block">
+                            <img src="/logo.png" alt="VELVETVIBE" className="h-16 rounded-xl mb-3 hover:opacity-80 transition-opacity" />
+                         </a>
+                        <p className="text-xs sm:text-sm text-gray-400 leading-relaxed mb-4">
                             Elevating everyday essentials through premium design and sustainable craftsmanship.
                         </p>
+                        
+                        {/* Social Media Icons */}
+                        <div className="flex items-center gap-3">
+                            <a 
+                                href="https://facebook.com" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"
+                                aria-label="Follow us on Facebook"
+                            >
+                                <Facebook size={16} className="text-white" />
+                            </a>
+                            <a 
+                                href="https://instagram.com" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"
+                                aria-label="Follow us on Instagram"
+                            >
+                                <Instagram size={16} className="text-white" />
+                            </a>
+                            <a 
+                                href="https://twitter.com" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"
+                                aria-label="Follow us on Twitter"
+                            >
+                                <Twitter size={16} className="text-white" />
+                            </a>
+                            <a 
+                                href="https://youtube.com" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"
+                                aria-label="Subscribe on YouTube"
+                            >
+                                <Youtube size={16} className="text-white" />
+                            </a>
+                        </div>
                     </div>
 
                     <div>
@@ -26,13 +67,25 @@ const Footer = () => {
                     </div>
 
                     <div>
-                        <h4 className="text-xs font-bold uppercase tracking-widest mb-4 sm:mb-6">Support</h4>
-                        <ul className="space-y-3">
-                            <li><a href="#faq" className="text-xs sm:text-sm text-gray-400 hover:text-accent transition-colors">FAQs</a></li>
-                            <li><a href="#shipping" className="text-xs sm:text-sm text-gray-400 hover:text-accent transition-colors">Shipping</a></li>
-                            <li><a href="#returns" className="text-xs sm:text-sm text-gray-400 hover:text-accent transition-colors">Returns</a></li>
-                            <li><a href="#contact" className="text-xs sm:text-sm text-gray-400 hover:text-accent transition-colors">Contact</a></li>
-                        </ul>
+                        <h4 className="text-xs font-bold uppercase tracking-widest mb-4 sm:mb-6">Contact Info</h4>
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-3">
+                                <MapPin size={16} className="text-gray-400" />
+                                <span className="text-xs sm:text-sm text-gray-400">123 Fashion Street, NY 10001</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <Phone size={16} className="text-gray-400" />
+                                <a href="tel:+1234567890" className="text-xs sm:text-sm text-gray-400 hover:text-accent transition-colors">
+                                    +1 (234) 567-890
+                                </a>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <Mail size={16} className="text-gray-400" />
+                                <a href="mailto:support@velvetvibe.com" className="text-xs sm:text-sm text-gray-400 hover:text-accent transition-colors">
+                                    support@velvetvibe.com
+                                </a>
+                            </div>
+                        </div>
                     </div>
 
                     <div>
@@ -46,12 +99,17 @@ const Footer = () => {
                     </div>
                 </div>
 
-                <div className="pt-6 sm:pt-8 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <p className="text-xs sm:text-sm text-gray-400">&copy; 2026 Velvet Vibe. All rights reserved.</p>
-                    <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm">
-                        <a href="#privacy" className="text-gray-400 hover:text-accent transition-colors">Privacy Policy</a>
-                        <span className="text-gray-700">|</span>
-                        <a href="#terms" className="text-gray-400 hover:text-accent transition-colors">Terms of Service</a>
+                <div className="pt-6 sm:pt-8 border-t border-gray-800">
+                    <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+                        <p className="text-xs sm:text-sm text-gray-400">&copy; 2026 Velvet Vibe. All rights reserved.</p>
+                        
+                         
+                        
+                        <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm">
+                            <a href="#privacy" className="text-gray-400 hover:text-accent transition-colors">Privacy Policy</a>
+                            <span className="text-gray-700">|</span>
+                            <a href="#terms" className="text-gray-400 hover:text-accent transition-colors">Terms of Service</a>
+                        </div>
                     </div>
                 </div>
             </div>
