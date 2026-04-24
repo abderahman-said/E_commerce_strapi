@@ -2,13 +2,12 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { Search, SlidersHorizontal, ChevronDown, Filter, X } from 'lucide-react';
-import { SAMPLE_PRODUCTS } from '../data/products';
+import { api, getImageUrl } from '../utils/api';
 import CategoryFilter from '../components/ui/CategoryFilter';
 import PriceRangeFilter from '../components/ui/PriceRangeFilter';
 import TagFilter from '../components/ui/TagFilter';
 import SortSelect from '../components/ui/SortSelect';
 
-const CATEGORIES = ['All', 'New Arrivals', 'Men', 'Women', 'Accessories'];
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest' },
   { value: 'price-low', label: 'Price: Low to High' },
@@ -19,13 +18,60 @@ const Shop = () => {
     const [searchParams] = useSearchParams();
     const activeCategory = searchParams.get('active');
     const urlSearchQuery = searchParams.get('search') || '';
-    
+
+    const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState(urlSearchQuery);
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [sortBy, setSortBy] = useState('newest');
     const [showFilters, setShowFilters] = useState(false);
-    const [priceRange, setPriceRange] = useState({ min: 0, max: 500 });
+    const [priceRange, setPriceRange] = useState({ min: 0, max: 2000 });
     const [selectedTags, setSelectedTags] = useState([]);
+
+    // Fetch data from Strapi
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                setLoading(true);
+                const [productsRes, categoriesRes] = await Promise.all([
+                    api.getProducts(),
+                    api.getCategories()
+                ]);
+
+                const mappedProducts = productsRes.data.map(item => ({
+                    id: item.id,
+                    documentId: item.documentId,
+                    name: item.name,
+                    price: item.price,
+                    description: item.description,
+                    slug: item.slug,
+                    category: item.category?.name || 'Uncategorized',
+                    image: getImageUrl(item.image),
+                    stock: 10,
+                    rating: 4.5
+                }));
+
+                const mappedCategories = [
+                    { value: 'all', label: 'All', count: mappedProducts.length },
+                    ...categoriesRes.data.map(cat => ({
+                        value: cat.slug || cat.name.toLowerCase().replace(' ', '-'),
+                        label: cat.name,
+                        count: mappedProducts.filter(p => p.category === cat.name).length
+                    }))
+                ];
+
+                setProducts(mappedProducts);
+                setCategories(mappedCategories);
+            } catch (err) {
+                console.error('Failed to load data:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadData();
+    }, []);
 
     // Set active category from URL parameter
     useEffect(() => {
@@ -43,23 +89,14 @@ const Shop = () => {
         }
     }, [activeCategory, selectedCategories]);
 
-    const categories = [
-      { value: 'new-arrivals', label: 'New Arrivals', count: 24 },
-      { value: 'men', label: 'Men', count: 48 },
-      { value: 'women', label: 'Women', count: 62 },
-      { value: 'accessories', label: 'Accessories', count: 31 },
-    ];
-
     const tags = [
-      { value: 'bestseller', label: 'Bestseller', count: 25 },
-      { value: 'new', label: 'New Arrival', count: 18 },
-      { value: 'sale', label: 'On Sale', count: 12 },
-      { value: 'premium', label: 'Premium', count: 8 },
-      { value: 'eco', label: 'Eco-Friendly', count: 6 },
+      { value: 'bestseller', label: 'Bestseller', count: 0 },
+      { value: 'new', label: 'New Arrival', count: 0 },
+      { value: 'sale', label: 'On Sale', count: 0 },
     ];
 
     const filteredProducts = useMemo(() => {
-        let result = SAMPLE_PRODUCTS.filter(product => {
+        let result = products.filter(product => {
             const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
             const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(product.category);
             const matchesPrice = product.price >= priceRange.min && product.price <= priceRange.max;
@@ -303,7 +340,12 @@ const Shop = () => {
 
                         {/* Product Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
-                            {filteredProducts.length > 0 ? (
+                            {loading ? (
+                                // Loading Skeletons
+                                [...Array(8)].map((_, i) => (
+                                    <div key={i} className="bg-gray-100 animate-pulse rounded-2xl h-[400px]"></div>
+                                ))
+                            ) : filteredProducts.length > 0 ? (
                                 filteredProducts.map(product => (
                                     <ProductCard key={product.id} product={product} />
                                 ))

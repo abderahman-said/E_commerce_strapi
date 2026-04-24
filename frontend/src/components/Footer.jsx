@@ -57,7 +57,7 @@ const Footer = () => {
                     </div>
 
                     <div>
-                        <h4 className="text-xs font-bold uppercase tracking-widest mb-4 sm:mb-6">Shop</h4>
+                        <h4 className="text-xs font-bold  text-white  uppercase tracking-widest mb-4 sm:mb-6">Shop</h4>
                         <ul className="space-y-3">
                             <li><Link to="/shop" className="text-xs sm:text-sm text-gray-400 hover:text-accent transition-colors">New Arrivals</Link></li>
                             <li><Link to="/shop" className="text-xs sm:text-sm text-gray-400 hover:text-accent transition-colors">Men</Link></li>
@@ -67,7 +67,7 @@ const Footer = () => {
                     </div>
 
                     <div>
-                        <h4 className="text-xs font-bold uppercase tracking-widest mb-4 sm:mb-6">Contact Info</h4>
+                        <h4 className="text-xs font-bold text-white uppercase tracking-widest mb-4 sm:mb-6">Contact Info</h4>
                         <div className="space-y-3">
                             <div className="flex items-center gap-3">
                                 <MapPin size={16} className="text-gray-400" />
@@ -89,7 +89,7 @@ const Footer = () => {
                     </div>
 
                     <div>
-                        <h4 className="text-xs font-bold uppercase tracking-widest mb-4 sm:mb-6">Company</h4>
+                        <h4 className="text-xs font-bold uppercase tracking-widest  text-white  mb-4 sm:mb-6">Company</h4>
                         <ul className="space-y-3">
                             <li><a href="#about" className="text-xs sm:text-sm text-gray-400 hover:text-accent transition-colors">About Us</a></li>
                             <li><a href="#sustainability" className="text-xs sm:text-sm text-gray-400 hover:text-accent transition-colors">Sustainability</a></li>
