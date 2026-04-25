@@ -17,82 +17,94 @@ exports.default = {
      * run jobs, or perform some special logic.
      */
     async bootstrap({ strapi }) {
+        /*
         const categories = [
-            { name: 'Menswear' },
-            { name: 'Womenswear' },
-            { name: 'Accessories' },
-            { name: 'Unisex' },
+          { name: 'Menswear' },
+          { name: 'Womenswear' },
+          { name: 'Accessories' },
+          { name: 'Unisex' },
         ];
+    
         const products = [
-            {
-                name: 'Minimalist Linen Shirt',
-                description: 'A breathable linen shirt perfect for summer days.',
-                price: 89,
-                category: 'Menswear',
-            },
-            {
-                name: 'Silk Evening Dress',
-                description: 'Elegant silk dress for special occasions.',
-                price: 249,
-                category: 'Womenswear',
-            },
-            {
-                name: 'Classic Leather Boots',
-                description: 'Durable leather boots that age beautifully.',
-                price: 185,
-                category: 'Accessories',
-            },
-            {
-                name: 'Oversized Cashmere Sweater',
-                description: 'Luxury comfort in a modern oversized fit.',
-                price: 120,
-                category: 'Unisex',
-            },
-            {
-                name: 'Tailored Wool Trousers',
-                description: 'Sharp tailoring for the modern professional.',
-                price: 145,
-                category: 'Menswear',
-            },
-            {
-                name: 'Structured Blazer',
-                description: 'A versatile blazer that elevates any outfit.',
-                price: 210,
-                category: 'Womenswear',
-            },
+          {
+            name: 'Minimalist Linen Shirt',
+            description: 'A breathable linen shirt perfect for summer days.',
+            price: 89,
+            category: 'Menswear',
+          },
+          // ... (rest of the products)
         ];
+    
         try {
-            // Check if categories exist
-            const existingCategories = await strapi.entityService.findMany('api::category.category', {
-                limit: 1,
+          // Check if categories exist
+          const existingCategories = await strapi.entityService.findMany('api::category.category', {
+            limit: 1,
+          });
+    
+          if (!existingCategories || existingCategories.length === 0) {
+            console.log('Seeding categories...');
+            const createdCategories = {};
+    
+            for (const cat of categories) {
+              const created = await strapi.entityService.create('api::category.category', {
+                data: {
+                  name: cat.name,
+                  publishedAt: new Date(),
+                },
+              });
+              createdCategories[cat.name] = created.id;
+            }
+    
+            console.log('Seeding products...');
+            for (const product of products) {
+              await strapi.entityService.create('api::product.product', {
+                data: {
+                  ...product,
+                  category: createdCategories[product.category], // Link to created category ID
+                  publishedAt: new Date(),
+                },
+              });
+            }
+            console.log('Seeding completed successfully.');
+          }
+        } catch (error) {
+          console.error('Error seeding data:', error);
+        }
+        */
+        try {
+            console.log('Checking and granting necessary permissions...');
+            const roles = await strapi.db.query('plugin::users-permissions.role').findMany({
+                where: { type: { $in: ['authenticated', 'public'] } },
+                populate: ['permissions']
             });
-            if (!existingCategories || existingCategories.length === 0) {
-                console.log('Seeding categories...');
-                const createdCategories = {};
-                for (const cat of categories) {
-                    const created = await strapi.entityService.create('api::category.category', {
-                        data: {
-                            name: cat.name,
-                            publishedAt: new Date(),
-                        },
+            const requiredPermissions = [
+                { action: 'plugin::users-permissions.user.find' },
+                { action: 'plugin::users-permissions.user.findOne' },
+                { action: 'api::order.order.find' },
+                { action: 'api::order.order.findOne' },
+                { action: 'api::order.order.create' },
+                { action: 'api::order.order.update' },
+                { action: 'api::order.order.delete' },
+            ];
+            for (const role of roles) {
+                for (const perm of requiredPermissions) {
+                    const exists = await strapi.db.query('plugin::users-permissions.permission').findOne({
+                        where: { action: perm.action, role: role.id }
                     });
-                    createdCategories[cat.name] = created.id;
+                    if (!exists) {
+                        await strapi.db.query('plugin::users-permissions.permission').create({
+                            data: {
+                                action: perm.action,
+                                role: role.id
+                            }
+                        });
+                        console.log(`Granted ${perm.action} to ${role.type} role.`);
+                    }
                 }
-                console.log('Seeding products...');
-                for (const product of products) {
-                    await strapi.entityService.create('api::product.product', {
-                        data: {
-                            ...product,
-                            category: createdCategories[product.category], // Link to created category ID
-                            publishedAt: new Date(),
-                        },
-                    });
-                }
-                console.log('Seeding completed successfully.');
             }
         }
         catch (error) {
-            console.error('Error seeding data:', error);
+            console.error('Error auto-granting permissions:', error);
         }
     },
 };

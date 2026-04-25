@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, X, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { SAMPLE_PRODUCTS } from '../data/products';
+import { api, getImageUrl } from '../utils/api';
 
 const SearchModal = ({ isOpen, onClose }) => {
     const [query, setQuery] = useState('');
@@ -50,19 +50,29 @@ const SearchModal = ({ isOpen, onClose }) => {
     }, [isOpen, onClose, results.length, selectedIndex]);
 
     useEffect(() => {
-        if (query.trim()) {
-            const filtered = SAMPLE_PRODUCTS.filter(product =>
-                product.name.toLowerCase().includes(query.toLowerCase()) ||
-                product.category?.toLowerCase().includes(query.toLowerCase()) ||
-                product.description?.toLowerCase().includes(query.toLowerCase())
-            ).slice(0, 8);
-            
-            setResults(filtered);
+        const searchProducts = async () => {
+            if (query.trim().length > 1) {
+                try {
+                    const res = await api.getProducts(`&filters[name][$containsi]=${query}`);
+                    const mappedResults = res.data.map(item => ({
+                        id: item.id,
+                        name: item.name,
+                        price: item.price,
+                        category: item.category?.name || 'Uncategorized',
+                        image: getImageUrl(item.image)
+                    }));
+                    setResults(mappedResults);
+                } catch (err) {
+                    console.error('Search failed:', err);
+                }
+            } else {
+                setResults([]);
+            }
             setSelectedIndex(-1);
-        } else {
-            setResults([]);
-            setSelectedIndex(-1);
-        }
+        };
+
+        const timeoutId = setTimeout(searchProducts, 300);
+        return () => clearTimeout(timeoutId);
     }, [query]);
 
     const handleProductClick = (product) => {

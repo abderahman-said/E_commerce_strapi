@@ -1,28 +1,84 @@
-import React, { Suspense, lazy } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Hero from '../components/Hero';
 import ProductCard from '../components/ProductCard';
-import { SAMPLE_PRODUCTS } from '../data/products';
+import { api, getImageUrl } from '../utils/api';
 
+
+const CATEGORY_IMAGES = [
+  "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=600&auto=format&fit=crop",
+];
 
 const Home = () => {
-  // Use first 3 products for featured section
-  const featuredProducts = SAMPLE_PRODUCTS.slice(0, 3);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        setCategoriesLoading(true);
+
+        const [productsRes, categoriesRes, allProductsRes] = await Promise.all([
+          api.getProducts('&pagination[limit]=3'),
+          api.getCategories(),
+          api.getProducts()
+        ]);
+
+        // Map featured products
+        const mappedProducts = productsRes.data.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          category: item.category?.name || 'Uncategorized',
+          image: getImageUrl(item.image),
+          stock: 10,
+          rating: 4.5
+        }));
+        setFeaturedProducts(mappedProducts);
+
+        // Map categories with product counts
+        const allProducts = allProductsRes.data;
+        const mappedCategories = categoriesRes.data.map((cat, idx) => ({
+          id: cat.id,
+          name: cat.name,
+          slug: cat.slug || cat.name.toLowerCase().replace(/\s+/g, '-'),
+          image: getImageUrl(cat.image) || CATEGORY_IMAGES[idx % CATEGORY_IMAGES.length],
+          count: allProducts.filter(p => p.category?.name === cat.name).length,
+        }));
+        setCategories(mappedCategories);
+
+      } catch (err) {
+        console.error('Failed to load data:', err);
+      } finally {
+        setLoading(false);
+        setCategoriesLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   return (
     <main className="min-h-screen">
-      {/* Hero Section - Above the fold */}
+      {/* Hero Section */}
       <Hero />
 
- {/* Categories Section */}
+      {/* Categories Section */}
       <section 
         id="categories" 
         className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gray-50"
         aria-labelledby="categories-heading"
       >
         <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-          {/* Section Header */}
           <div className="text-center mb-8 sm:mb-10 md:mb-12">
             <h2 
               id="categories-heading"
@@ -37,39 +93,17 @@ const Home = () => {
 
           {/* Categories Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
-            {[
-              {
-    name: "New Arrivals",
-    image: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=600&auto=format&fit=crop",
-    link: "/shop",
-    count: "24 items"
-  },
-  {
-    name: "Men",
-    image: "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=600&auto=format&fit=crop",
-    link: "/shop",
-    count: "48 items"
-  },
-  {
-    name: "Women",
-    image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&auto=format&fit=crop",
-    link: "/shop",
-    count: "62 items"
-  },
-  {
-    name: "Accessories",
-    image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=600&auto=format&fit=crop",
-    link: "/shop",
-    count: "31 items"
-  }
-            ].map((category) => (
+            {categoriesLoading ? (
+              [...Array(4)].map((_, i) => (
+                <div key={i} className="bg-gray-200 animate-pulse rounded-lg h-72"></div>
+              ))
+            ) : categories.length > 0 ? categories.map((category) => (
               <Link
-                key={category.name}
-                to={category.link}
+                key={category.id}
+                to={`/shop?category=${category.slug}`}
                 className="group relative overflow-hidden rounded-lg bg-white shadow-sm hover:shadow-lg transition-all duration-300"
                 aria-label={`Shop ${category.name} collection`}
               >
-                {/* Category Image */}
                 <div className="aspect-square overflow-hidden bg-gray-100">
                   <img
                     src={category.image}
@@ -79,25 +113,29 @@ const Home = () => {
                   />
                 </div>
                 
-                {/* Category Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                    <p className="text-sm font-medium">{category.count}</p>
+                    <p className="text-sm font-medium">{category.count} items</p>
                   </div>
                 </div>
 
-                {/* Category Info */}
                 <div className="p-4 sm:p-5">
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors duration-200">
                     {category.name}
                   </h3>
-                  <p className="text-sm text-gray-600">{category.count}</p>
+                  <p className="text-sm text-gray-600">{category.count} items</p>
                 </div>
               </Link>
-            ))}
+            )) : (
+              <div className="col-span-4 text-center py-12 text-gray-400">
+                <p className="text-lg font-medium">No categories yet.</p>
+                <p className="text-sm mt-1">Add them from the <Link to="/admin/categories" className="text-blue-600 underline">admin panel</Link>.</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
+
       {/* Featured Products Section */}
       <section 
         id="new-arrivals" 
@@ -105,7 +143,6 @@ const Home = () => {
         aria-labelledby="new-arrivals-heading"
       >
         <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-          {/* Section Header */}
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 sm:gap-6 mb-8 sm:mb-10 md:mb-12">
             <div className="max-w-2xl">
               <h2 
@@ -122,32 +159,30 @@ const Home = () => {
             <Link 
               to="/shop" 
               className="group inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-900 hover:text-accent transition-colors duration-200 self-start sm:self-auto"
-              aria-label="View all products in our collection"
             >
               <span>View All Collection</span>
-              <ArrowRight 
-                size={14} 
-                className="transform group-hover:translate-x-1 transition-transform duration-200" 
-              />
+              <ArrowRight size={14} className="transform group-hover:translate-x-1 transition-transform duration-200" />
             </Link>
           </div>
 
-          {/* Product Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-            {featuredProducts.map((product) => (
-              <ProductCard 
-                key={product.id} 
-                product={product}
-                priority={true} // Load these images with priority
-              />
-            ))}
+            {loading ? (
+              [...Array(3)].map((_, i) => (
+                <div key={i} className="bg-gray-100 animate-pulse rounded-2xl h-[400px]"></div>
+              ))
+            ) : featuredProducts.length > 0 ? featuredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} priority={true} />
+            )) : (
+              <div className="col-span-3 text-center py-12 text-gray-400">
+                <p className="text-lg font-medium">No products yet.</p>
+                <p className="text-sm mt-1">Add them from the admin panel.</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
 
-     
-
-      {/* Optional: Add trust badges section */}
+      {/* Trust badges */}
       <section className="py-6 sm:py-8 md:py-10 lg:py-12 bg-gray-50 border-y border-gray-200">
         <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">

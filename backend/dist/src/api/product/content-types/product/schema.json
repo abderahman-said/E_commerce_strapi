@@ -39,6 +39,11 @@
         "slug": {
             "type": "uid",
             "targetField": "name"
+        },
+        "stock": {
+            "type": "integer",
+            "default": 10,
+            "min": 0
         }
     }
 }

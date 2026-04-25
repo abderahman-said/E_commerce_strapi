@@ -12,7 +12,7 @@ import {
   TrendingUp,
   DollarSign
 } from 'lucide-react';
-import { SAMPLE_PRODUCTS } from '../../data/products';
+import { api, getImageUrl } from '../../utils/api';
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
@@ -21,11 +21,29 @@ const AdminProducts = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setProducts(SAMPLE_PRODUCTS);
-      setIsLoading(false);
-    }, 1000);
+    const loadProducts = async () => {
+      try {
+        setIsLoading(true);
+        const res = await api.getProducts();
+        const mappedProducts = res.data.map(item => ({
+          id: item.documentId || item.id,
+          numericId: item.id,
+          name: item.name,
+          price: item.price,
+          category: item.category?.name || 'Uncategorized',
+          image: getImageUrl(item.image),
+          stock: 10,
+          rating: 4.5
+        }));
+        setProducts(mappedProducts);
+      } catch (err) {
+        console.error('Failed to load products:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProducts();
   }, []);
 
   const filteredProducts = products.filter(product => {
@@ -36,9 +54,14 @@ const AdminProducts = () => {
 
   const categories = ['all', ...new Set(products.map(p => p.category).filter(Boolean))];
 
-  const handleDeleteProduct = (productId) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
+  const handleDeleteProduct = async (productId) => {
+    if (!window.confirm('Are you sure you want to delete this product?')) return;
+    try {
+      await api.deleteProduct(productId);
       setProducts(products.filter(p => p.id !== productId));
+    } catch (err) {
+      console.error('Failed to delete product:', err);
+      alert('Failed to delete. Make sure you have admin permissions in Strapi.');
     }
   };
 

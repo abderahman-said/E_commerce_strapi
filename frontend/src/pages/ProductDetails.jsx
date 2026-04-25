@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { SAMPLE_PRODUCTS } from '../data/products';
+import { api, getImageUrl } from '../utils/api';
 import { useCart } from '../context/CartContext';
-import { ArrowLeft, ShoppingBag, Truck, ShieldCheck, Star, Minus, Plus, Heart, Share2, Check } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Truck, ShieldCheck, Star, Minus, Plus, Heart, Share2, Check, Loader2 } from 'lucide-react';
 import ProductVariantSelector from '../components/ui/ProductVariantSelector';
 
 const ProductDetails = () => {
     const { id } = useParams();
     const { addToCart } = useCart();
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState('description');
     const [selectedVariant, setSelectedVariant] = useState({
@@ -16,7 +18,47 @@ const ProductDetails = () => {
         material: null
     });
 
-    const product = SAMPLE_PRODUCTS.find(p => p.id === parseInt(id));
+    useEffect(() => {
+        const loadProduct = async () => {
+            try {
+                setLoading(true);
+                const res = await api.getProduct(id);
+                const item = res.data;
+                
+                if (item) {
+                    setProduct({
+                        id: item.id,
+                        documentId: item.documentId,
+                        name: item.name,
+                        price: item.price,
+                        description: item.description,
+                        slug: item.slug,
+                        category: item.category?.name || 'Uncategorized',
+                        image: getImageUrl(item.image),
+                        stock: 10,
+                        rating: 4.5
+                    });
+                }
+            } catch (err) {
+                console.error('Failed to load product:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadProduct();
+    }, [id]);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="flex flex-col items-center gap-4">
+                    <Loader2 size={48} className="animate-spin text-blue-600" />
+                    <p className="text-gray-600 font-medium">Loading product details...</p>
+                </div>
+            </div>
+        );
+    }
 
     if (!product) {
         return (

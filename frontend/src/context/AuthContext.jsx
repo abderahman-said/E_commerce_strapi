@@ -25,32 +25,54 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(false);
     }, []);
 
-    const login = async (email, password) => {
+    const login = async (identifier, password) => {
         try {
-            // Simulate API call - replace with actual API
-            const response = await mockLogin(email, password);
+            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:1337/api';
+            const res = await fetch(`${API_URL}/auth/local`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ identifier, password }),
+            });
+
+            const data = await res.json();
             
-            setUser(response.user);
-            localStorage.setItem('token', response.token);
-            localStorage.setItem('user', JSON.stringify(response.user));
+            if (!res.ok) {
+                throw new Error(data.error?.message || 'Login failed');
+            }
+            
+            setUser(data.user);
+            localStorage.setItem('token', data.jwt);
+            localStorage.setItem('user', JSON.stringify(data.user));
             
             return { success: true };
         } catch (error) {
+            console.error('Login error:', error);
             return { success: false, error: error.message };
         }
     };
 
     const register = async (userData) => {
         try {
-            // Simulate API call - replace with actual API
-            const response = await mockRegister(userData);
+            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:1337/api';
+            const res = await fetch(`${API_URL}/auth/local/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(userData),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error?.message || 'Registration failed');
+            }
             
-            setUser(response.user);
-            localStorage.setItem('token', response.token);
-            localStorage.setItem('user', JSON.stringify(response.user));
+            setUser(data.user);
+            localStorage.setItem('token', data.jwt);
+            localStorage.setItem('user', JSON.stringify(data.user));
             
             return { success: true };
         } catch (error) {
+            console.error('Registration error:', error);
             return { success: false, error: error.message };
         }
     };
@@ -77,43 +99,3 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
-// Mock API functions - replace with actual API calls
-const mockLogin = async (email, password) => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            if (email === 'test@example.com' && password === 'password') {
-                resolve({
-                    token: 'mock-jwt-token',
-                    user: {
-                        id: 1,
-                        name: 'Test User',
-                        email: 'test@example.com',
-                        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face'
-                    }
-                });
-            } else {
-                reject(new Error('Invalid email or password'));
-            }
-        }, 1000);
-    });
-};
-
-const mockRegister = async (userData) => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            if (userData.email && userData.password && userData.name) {
-                resolve({
-                    token: 'mock-jwt-token',
-                    user: {
-                        id: Date.now(),
-                        name: userData.name,
-                        email: userData.email,
-                        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face'
-                    }
-                });
-            } else {
-                reject(new Error('Please fill in all fields'));
-            }
-        }, 1000);
-    });
-};

@@ -31,19 +31,7 @@ const ProductCard = ({ product, priority = false }) => {
     setAddingToCart(false);
   };
 
-  const handleQuickView = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    // Implement quick view modal
-    console.log('Quick view:', id);
-  };
-
-  const handleWishlist = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsWishlisted(!isWishlisted);
-    // Implement wishlist API call
-  };
+ 
 
   const renderStars = (rating) => {
     return (
@@ -72,7 +60,7 @@ const ProductCard = ({ product, priority = false }) => {
         className="block focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-2xl"
         aria-label={`View details for ${name}`}
       >
-        <div className="relative aspect-[3/4] bg-gray-50 overflow-hidden">
+        <div className="relative aspect-[4/3] bg-gray-50 overflow-hidden">
           {/* Shimmer Effect */}
           {!imageLoaded && (
             <div className="absolute inset-0">
@@ -125,52 +113,6 @@ const ProductCard = ({ product, priority = false }) => {
               </span>
             )}
           </div>
-
-          {/* Quick Action Buttons */}
-          <div className={`
-            absolute top-2 right-2 sm:top-3 sm:right-3 flex flex-col gap-1.5 sm:gap-2 z-10
-            transition-all duration-500 ease-out
-            ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-6 sm:translate-x-8'}
-          `}>
-            <button
-              onClick={handleQuickView}
-              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/95 backdrop-blur-sm shadow-lg 
-                       flex items-center justify-center text-gray-700 
-                       hover:bg-primary hover:text-white 
-                       hover:scale-125 hover:rotate-12
-                       transition-all duration-300
-                       focus:outline-none focus:ring-2 focus:ring-primary
-                       touch-manipulation"
-              title="Quick View"
-              aria-label="Quick view product"
-            >
-              <Eye size={14} className="sm:size-16" />
-            </button>
-            <button
-              onClick={handleWishlist}
-              className={`
-                w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/95 backdrop-blur-sm shadow-lg 
-                flex items-center justify-center 
-                hover:scale-125 transition-all duration-300
-                focus:outline-none focus:ring-2 focus:ring-primary
-                touch-manipulation
-                ${isWishlisted 
-                  ? 'text-primary hover:bg-secondary' 
-                  : 'text-gray-700 hover:bg-primary hover:text-white'
-                }
-              `}
-              title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
-              aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-              aria-pressed={isWishlisted}
-            >
-              <Heart 
-                size={14} 
-                fill={isWishlisted ? 'currentColor' : 'none'}
-                className={`sm:size-16 ${isWishlisted ? 'animate-pulse' : ''}`}
-              />
-            </button>
-          </div>
-
           {/* Out of Stock Overlay */}
           {stock === 0 && (
             <div className={`

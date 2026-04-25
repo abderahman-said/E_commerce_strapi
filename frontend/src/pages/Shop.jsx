@@ -16,7 +16,7 @@ const SORT_OPTIONS = [
 
 const Shop = () => {
     const [searchParams] = useSearchParams();
-    const activeCategory = searchParams.get('active');
+    const activeCategorySlug = searchParams.get('category') || searchParams.get('active') || '';
     const urlSearchQuery = searchParams.get('search') || '';
 
     const [products, setProducts] = useState([]);
@@ -47,6 +47,7 @@ const Shop = () => {
                     description: item.description,
                     slug: item.slug,
                     category: item.category?.name || 'Uncategorized',
+                    categorySlug: item.category?.slug || item.category?.name?.toLowerCase().replace(/\s+/g, '-') || '',
                     image: getImageUrl(item.image),
                     stock: 10,
                     rating: 4.5
@@ -55,7 +56,7 @@ const Shop = () => {
                 const mappedCategories = [
                     { value: 'all', label: 'All', count: mappedProducts.length },
                     ...categoriesRes.data.map(cat => ({
-                        value: cat.slug || cat.name.toLowerCase().replace(' ', '-'),
+                        value: cat.slug || cat.name.toLowerCase().replace(/\s+/g, '-'),
                         label: cat.name,
                         count: mappedProducts.filter(p => p.category === cat.name).length
                     }))
@@ -63,6 +64,18 @@ const Shop = () => {
 
                 setProducts(mappedProducts);
                 setCategories(mappedCategories);
+
+                // Pre-select category from URL
+                if (activeCategorySlug && activeCategorySlug !== 'all') {
+                    const matched = categoriesRes.data.find(cat => {
+                        const slug = cat.slug || cat.name.toLowerCase().replace(/\s+/g, '-');
+                        return slug === activeCategorySlug || cat.name.toLowerCase() === activeCategorySlug.toLowerCase();
+                    });
+                    if (matched) {
+                        const slug = matched.slug || matched.name.toLowerCase().replace(/\s+/g, '-');
+                        setSelectedCategories([slug]);
+                    }
+                }
             } catch (err) {
                 console.error('Failed to load data:', err);
             } finally {
@@ -71,23 +84,7 @@ const Shop = () => {
         };
 
         loadData();
-    }, []);
-
-    // Set active category from URL parameter
-    useEffect(() => {
-        if (activeCategory) {
-            const categoryMap = {
-                'new-arrivals': 'New Arrivals',
-                'men': 'Men',
-                'women': 'Women',
-                'accessories': 'Accessories'
-            };
-            const category = categoryMap[activeCategory];
-            if (category && !selectedCategories.includes(category)) {
-                setSelectedCategories([category]);
-            }
-        }
-    }, [activeCategory, selectedCategories]);
+    }, [activeCategorySlug]);
 
     const tags = [
       { value: 'bestseller', label: 'Bestseller', count: 0 },
@@ -98,7 +95,7 @@ const Shop = () => {
     const filteredProducts = useMemo(() => {
         let result = products.filter(product => {
             const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(product.category);
+            const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes('all') || selectedCategories.includes(product.categorySlug);
             const matchesPrice = product.price >= priceRange.min && product.price <= priceRange.max;
             const matchesTags = selectedTags.length === 0 || selectedTags.some(tag => 
                 product.tags && product.tags.includes(tag)
@@ -114,7 +111,7 @@ const Shop = () => {
         // 'newest' assumes default order for now
 
         return result;
-    }, [searchQuery, selectedCategories, sortBy, priceRange, selectedTags]);
+    }, [products, searchQuery, selectedCategories, sortBy, priceRange, selectedTags]);
 
     const clearAllFilters = () => {
         setSearchQuery('');
@@ -223,16 +220,8 @@ const Shop = () => {
                         <div className="bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-gray-200">
                             <CategoryFilter
                                 categories={categories}
-                                selectedCategories={selectedCategories.map(cat => cat.toLowerCase().replace(' ', '-'))}
-                                onChange={(cats) => {
-                                    const categoryMap = {
-                                        'new-arrivals': 'New Arrivals',
-                                        'men': 'Men',
-                                        'women': 'Women',
-                                        'accessories': 'Accessories'
-                                    };
-                                    setSelectedCategories(cats.map(cat => categoryMap[cat] || cat));
-                                }}
+                                selectedCategories={selectedCategories}
+                                onChange={setSelectedCategories}
                                 variant="sidebar"
                             />
                         </div>
@@ -311,27 +300,27 @@ const Shop = () => {
                                     <div>
                                         <h3 className="text-sm font-semibold text-gray-900 mb-2">Category</h3>
                                         <div className="flex flex-wrap gap-2">
-                                            {CATEGORIES.map(category => (
+                                            {categories.map(categoryObj => {
+                                                if (categoryObj.value === 'all') return null;
+                                                return (
                                                 <button
-                                                    key={category}
+                                                    key={categoryObj.value}
                                                     onClick={() => {
-                                                        if (category === 'All') {
-                                                            setSelectedCategories([]);
-                                                        } else if (selectedCategories.includes(category)) {
-                                                            setSelectedCategories(selectedCategories.filter(cat => cat !== category));
+                                                        if (selectedCategories.includes(categoryObj.value)) {
+                                                            setSelectedCategories(selectedCategories.filter(cat => cat !== categoryObj.value));
                                                         } else {
-                                                            setSelectedCategories([...selectedCategories, category]);
+                                                            setSelectedCategories([...selectedCategories, categoryObj.value]);
                                                         }
                                                     }}
                                                     className={`px-3 py-1.5 text-sm rounded-lg transition-colors touch-manipulation ${
-                                                        selectedCategories.includes(category) 
+                                                        selectedCategories.includes(categoryObj.value) 
                                                             ? 'bg-blue-600 text-white' 
                                                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                                     }`}
                                                 >
-                                                    {category}
+                                                    {categoryObj.label}
                                                 </button>
-                                            ))}
+                                            )})}
                                         </div>
                                     </div>
                                 </div>

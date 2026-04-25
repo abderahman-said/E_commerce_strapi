@@ -12,7 +12,7 @@ import {
   Plus,
   BarChart3
 } from 'lucide-react';
-import { SAMPLE_PRODUCTS } from '../../data/products';
+import { api, getImageUrl } from '../../utils/api';
 
 const AdminHome = () => {
   const [stats, setStats] = useState({
@@ -26,33 +26,62 @@ const AdminHome = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate API call for dashboard data
-    const mockStats = {
-      totalProducts: SAMPLE_PRODUCTS.length,
-      totalOrders: 156,
-      totalRevenue: 45678,
-      totalUsers: 892
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Fetch all needed data
+        const [productsRes, ordersRes] = await Promise.all([
+          api.getProducts(),
+          api.getOrders()
+        ]);
+
+        const products = productsRes.data;
+        const orders = ordersRes.data;
+        
+        // For users, we need to fetch separately (different endpoint)
+        const token = localStorage.getItem('token');
+        const usersRes = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const users = await usersRes.json();
+
+        const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
+
+        const mockStats = {
+          totalProducts: products.length,
+          totalOrders: orders.length,
+          totalRevenue: totalRevenue.toLocaleString(),
+          totalUsers: Array.isArray(users) ? users.length : 1
+        };
+
+        const mockRecentOrders = orders.slice(0, 5).map(order => ({
+          id: order.orderId || `ORD-${order.id}`,
+          customer: order.customer?.name || 'Guest',
+          amount: order.total,
+          status: order.status,
+          date: new Date(order.createdAt).toLocaleDateString()
+        }));
+
+        const mappedTopProducts = products.slice(0, 5).map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          image: getImageUrl(item.image),
+          sales: Math.floor(Math.random() * 100) + 20
+        }));
+
+        setStats(mockStats);
+        setRecentOrders(mockRecentOrders);
+        setTopProducts(mappedTopProducts);
+      } catch (err) {
+        console.error('Failed to load dashboard data:', err);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    const mockRecentOrders = [
-      { id: 'ORD-001', customer: 'John Doe', amount: 234, status: 'completed', date: '2024-01-15' },
-      { id: 'ORD-002', customer: 'Jane Smith', amount: 156, status: 'processing', date: '2024-01-15' },
-      { id: 'ORD-003', customer: 'Bob Johnson', amount: 445, status: 'pending', date: '2024-01-14' },
-      { id: 'ORD-004', customer: 'Alice Brown', amount: 89, status: 'completed', date: '2024-01-14' },
-      { id: 'ORD-005', customer: 'Charlie Wilson', amount: 312, status: 'shipped', date: '2024-01-13' },
-    ];
-
-    const mockTopProducts = SAMPLE_PRODUCTS.slice(0, 5).map(product => ({
-      ...product,
-      sales: Math.floor(Math.random() * 100) + 20
-    }));
-
-    setTimeout(() => {
-      setStats(mockStats);
-      setRecentOrders(mockRecentOrders);
-      setTopProducts(mockTopProducts);
-      setIsLoading(false);
-    }, 1000);
+    loadData();
   }, []);
 
   const statCards = [
@@ -74,7 +103,7 @@ const AdminHome = () => {
     },
     {
       title: 'Total Revenue',
-      value: `$${stats.totalRevenue.toLocaleString()}`,
+      value: `$${stats.totalRevenue}`,
       icon: DollarSign,
       change: 15,
       changeType: 'increase',

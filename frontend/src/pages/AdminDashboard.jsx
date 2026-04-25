@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
+import { api } from '../utils/api';
 import { 
   LayoutDashboard, 
   Package, 
@@ -27,6 +28,36 @@ const AdminDashboard = () => {
   });
   const location = useLocation();
   const { user, logout } = useAuth();
+
+  const [counts, setCounts] = useState({
+    products: null,
+    categories: null,
+    orders: null,
+    users: null
+  });
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const [products, categories, orders, users] = await Promise.all([
+          api.getProducts().catch(() => ({ data: [] })),
+          api.getCategories().catch(() => ({ data: [] })),
+          api.getOrders().catch(() => ({ data: [] })),
+          api.getUsers().catch(() => [])
+        ]);
+        
+        setCounts({
+          products: products?.data?.length || 0,
+          categories: categories?.data?.length || 0,
+          orders: orders?.data?.length || 0,
+          users: Array.isArray(users) ? users.length : 0
+        });
+      } catch (err) {
+        console.error("Failed to fetch counts:", err);
+      }
+    };
+    fetchCounts();
+  }, []);
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({
@@ -56,28 +87,28 @@ const AdminDashboard = () => {
           icon: Package, 
           path: '/admin/products', 
           description: 'Manage products',
-          badge: '128'
+          badge: counts.products !== null ? counts.products : '...'
         },
         { 
           name: 'Categories', 
           icon: Tags, 
           path: '/admin/categories', 
           description: 'Manage categories',
-          badge: '6'
+          badge: counts.categories !== null ? counts.categories : '...'
         },
         { 
           name: 'Orders', 
           icon: Store, 
           path: '/admin/orders', 
           description: 'Manage orders',
-          badge: '24'
+          badge: counts.orders !== null ? counts.orders : '...'
         },
         { 
           name: 'Users', 
           icon: Users, 
           path: '/admin/users', 
           description: 'Manage users',
-          badge: '892'
+          badge: counts.users !== null ? counts.users : '...'
         }
       ]
     },

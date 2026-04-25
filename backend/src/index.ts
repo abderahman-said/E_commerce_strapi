@@ -17,6 +17,7 @@ export default {
    * run jobs, or perform some special logic.
    */
   async bootstrap({ strapi }: { strapi: any }) {
+    /* 
     const categories = [
       { name: 'Menswear' },
       { name: 'Womenswear' },
@@ -31,36 +32,7 @@ export default {
         price: 89,
         category: 'Menswear',
       },
-      {
-        name: 'Silk Evening Dress',
-        description: 'Elegant silk dress for special occasions.',
-        price: 249,
-        category: 'Womenswear',
-      },
-      {
-        name: 'Classic Leather Boots',
-        description: 'Durable leather boots that age beautifully.',
-        price: 185,
-        category: 'Accessories',
-      },
-      {
-        name: 'Oversized Cashmere Sweater',
-        description: 'Luxury comfort in a modern oversized fit.',
-        price: 120,
-        category: 'Unisex',
-      },
-      {
-        name: 'Tailored Wool Trousers',
-        description: 'Sharp tailoring for the modern professional.',
-        price: 145,
-        category: 'Menswear',
-      },
-      {
-        name: 'Structured Blazer',
-        description: 'A versatile blazer that elevates any outfit.',
-        price: 210,
-        category: 'Womenswear',
-      },
+      // ... (rest of the products)
     ];
 
     try {
@@ -97,6 +69,45 @@ export default {
       }
     } catch (error) {
       console.error('Error seeding data:', error);
+    }
+    */
+    try {
+      console.log('Checking and granting necessary permissions...');
+      
+      const roles = await strapi.db.query('plugin::users-permissions.role').findMany({
+        where: { type: { $in: ['authenticated', 'public'] } },
+        populate: ['permissions']
+      });
+
+      const requiredPermissions = [
+        { action: 'plugin::users-permissions.user.find' },
+        { action: 'plugin::users-permissions.user.findOne' },
+        { action: 'api::order.order.find' },
+        { action: 'api::order.order.findOne' },
+        { action: 'api::order.order.create' },
+        { action: 'api::order.order.update' },
+        { action: 'api::order.order.delete' },
+      ];
+
+      for (const role of roles) {
+        for (const perm of requiredPermissions) {
+          const exists = await strapi.db.query('plugin::users-permissions.permission').findOne({
+            where: { action: perm.action, role: role.id }
+          });
+
+          if (!exists) {
+            await strapi.db.query('plugin::users-permissions.permission').create({
+              data: {
+                action: perm.action,
+                role: role.id
+              }
+            });
+            console.log(`Granted ${perm.action} to ${role.type} role.`);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error auto-granting permissions:', error);
     }
   },
 };
