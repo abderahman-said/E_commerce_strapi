@@ -23,6 +23,14 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
       try {
         const PAYMOB_API_KEY = process.env.PAYMOB_API_KEY;
         const PAYMOB_INTEGRATION_ID = process.env.PAYMOB_INTEGRATION_ID;
+        const iframeId = process.env.PAYMOB_IFRAME_ID;
+
+        // Fallback for simulation if keys are missing or placeholders
+        if (!PAYMOB_API_KEY || PAYMOB_API_KEY === 'your_api_key_here') {
+          console.log('--- SIMULATION MODE: Missing Paymob Keys ---');
+          const payment_url = `https://checkout.cibeg.com/pay?mock=true&orderId=${order.id}`;
+          return { data: order, payment_url };
+        }
 
         // Step 1: Authentication
         const authResponse = await axios.post('https://egypt.paymob.com/api/auth/tokens', {
@@ -66,7 +74,6 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         });
 
         const paymentToken = paymentKeyResponse.data.token;
-        const iframeId = process.env.PAYMOB_IFRAME_ID;
         
         // Final Payment URL
         const payment_url = `https://egypt.paymob.com/api/acceptance/iframes/${iframeId}?payment_token=${paymentToken}`;

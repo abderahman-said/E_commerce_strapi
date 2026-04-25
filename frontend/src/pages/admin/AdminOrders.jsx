@@ -29,10 +29,10 @@ const AdminOrders = () => {
         const res = await api.getOrders();
         setOrders(res.data.map(order => ({
           id: order.id,
-          orderId: order.orderId,
+          orderId: order.documentId?.substring(0, 8).toUpperCase() || `#${order.id}`,
           total: order.total,
           status: order.status,
-          customer: order.customer,
+          customerName: order.shippingAddress?.firstName ? `${order.shippingAddress.firstName} ${order.shippingAddress.lastName}` : 'Guest',
           items: order.items,
           createdAt: order.createdAt
         })));
@@ -59,7 +59,7 @@ const AdminOrders = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      await api.updateProduct(`orders/${orderId}`, { status: newStatus });
+      await api.updateOrder(orderId, { status: newStatus });
       setOrders(orders.map(order => 
         order.id === orderId ? { ...order, status: newStatus } : order
       ));
@@ -72,7 +72,7 @@ const AdminOrders = () => {
   const filteredOrders = orders.filter(order => {
     const matchesSearch = 
       order.orderId?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.customer?.name?.toLowerCase().includes(searchQuery.toLowerCase());
+      order.customerName?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -153,7 +153,7 @@ const AdminOrders = () => {
                         <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                           <User size={16} className="text-gray-500" />
                         </div>
-                        <span className="text-sm font-medium text-gray-900">{order.customer?.name || 'Guest'}</span>
+                        <span className="text-sm font-medium text-gray-900">{order.customerName}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
