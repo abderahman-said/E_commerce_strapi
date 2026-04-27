@@ -87,6 +87,10 @@ export default {
         { action: 'api::order.order.create' },
         { action: 'api::order.order.update' },
         { action: 'api::order.order.delete' },
+        { action: 'api::product.product.find' },
+        { action: 'api::product.product.findOne' },
+        { action: 'api::category.category.find' },
+        { action: 'api::category.category.findOne' },
       ];
 
       for (const role of roles) {
